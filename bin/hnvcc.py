@@ -111,6 +111,8 @@ def doHackOrDump(args, op):
     if len(out_s)==0:
         raise Exception('Empty command list!!!')
 
+    print(out_s)
+
     cmds = []
 
     for line in out_s.splitlines():
