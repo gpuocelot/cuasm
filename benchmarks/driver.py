@@ -14,10 +14,7 @@ from pycuda.compiler import SourceModule
 import pycuda.tools
 import pycuda.autoinit
 
-# this is from NV offfice python
-# import cuda
-# from cuda import cuda, nvrtc
-# from cuda import cudart
+from utils import benchmark
 
 from absl import app
 from absl import flags
@@ -26,6 +23,7 @@ FLAGS = flags.FLAGS
 flags.DEFINE_string("fn", "example/vector_add/out", "cubin file name")
 flags.DEFINE_string("func", "_Z9vectorAddPfS_S_i", "func name after mingling")
 flags.DEFINE_integer("thr", 5, "thread num")
+flags.DEFINE_integer("bx", 256, "block dim x")
 
 # from: https://documen.tician.de/pycuda/tutorial.html
 def jit():
@@ -89,21 +87,24 @@ def main(_):
 
     # args short cut (without short cut we can do cu_memcpy explicitly)
     # TODO find a way to get args and cuda launch args from cubin automatically??
-    a = np.random.randn(400).astype(np.float32)
-    b = np.random.randn(400).astype(np.float32)
+    n_element = 1_000_000
+    a = np.random.randn(n_element).astype(np.float32)
+    b = np.random.randn(n_element).astype(np.float32)
     dest = np.zeros_like(a)
-    n = np.int32(400)
+    n = np.int32(n_element)
 
     # kernel configs
-    block = (400, 1, 1)
-    grid = (1, 1)
+    block = (FLAGS.bx, 1, 1)
+    grid = (int(np.ceil((n_element+FLAGS.bx)//FLAGS.bx)), 1)
+
+    print(f'Grid: {grid}; Block: {block}')
 
     # launch
     kernel(drv.In(a), drv.In(b), drv.Out(dest),  n, #
             block=block, grid=grid, # 
     )
 
-    # result
+    # verify result
     print('CUBIN:')
 
     # print(f'Result = {np.unique(c)[0]:#0x}')
@@ -112,6 +113,24 @@ def main(_):
     c_ref = a+b
     np.testing.assert_allclose(dest, c_ref) 
     print(f'{FLAGS.fn} passed')
+
+
+    # benchmark
+    a_gpu = drv.mem_alloc(a.nbytes)
+    b_gpu = drv.mem_alloc(b.nbytes)
+    dest_gpu = drv.mem_alloc(dest.nbytes)
+    drv.memcpy_htod(a_gpu, a)
+    drv.memcpy_htod(b_gpu, b)
+    drv.memcpy_htod(dest_gpu, dest)
+
+    result = benchmark(fn=lambda: kernel(a_gpu, b_gpu, dest_gpu,  n, #
+            block=block, grid=grid, #
+    ), # 
+    warmup=25, rep=100, percentiles=(0.2, 0.5, 0.8), # 
+    )
+    print('BENCHMARK:')
+    print(result)
+
 
 if __name__ == "__main__":
     app.run(main)
