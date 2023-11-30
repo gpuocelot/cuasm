@@ -26,7 +26,6 @@ if args.repo:
 else:
     repo = REPO/newRepoTemplate.format(args.arch)
 
-default_repo = STEM/defaultRepoTemplate.format(args.arch)
 new_default_repo = REPO/defaultRepoTemplate.format(args.arch)
 new_default_repo.parent.mkdir(parents=True, exist_ok=True)
 
@@ -52,7 +51,7 @@ def constructReposFromFile(sassname, savname=None, arch='sm_86'):
 
     return repos
 
-def verifyReposFromFile(sassname, reposfile, arch='sm_75'):
+def verifyReposFromFile(sassname, reposfile, arch='sm_86'):
 
     # initialize a feeder with sass
     feeder = CuInsFeeder(sassname, archfilter=arch)
@@ -71,8 +70,9 @@ if __name__ == '__main__':
     verifyReposFromFile(args.sass, str(repo), arch=args.arch)
     print('### Verification done!')
 
-    default_repos = CuInsAssemblerRepos(str(default_repo))
-    default_repos.merge(str(repo))
+    default_repo = CuInsAssemblerRepos.getDefaultRepos(args.arch)
+    #default_repo = CuInsAssemblerRepos(str(default_repo))
+    default_repo.merge(str(repo))
 
-    default_repos.completePredCodes()
-    default_repos.save2file(str(new_default_repo))
+    default_repo.completePredCodes()
+    default_repo.save2file(str(new_default_repo))
