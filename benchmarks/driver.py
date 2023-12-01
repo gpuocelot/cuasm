@@ -85,34 +85,30 @@ def main(_):
     mod = drv.module_from_file(f'{FLAGS.fn}.cubin')
     kernel = mod.get_function(f'{FLAGS.func}')
 
-    # args short cut (without short cut we can do cu_memcpy explicitly)
-    # TODO find a way to get args and cuda launch args from cubin automatically??
-    n_element = 1_000_000
-    a = np.random.randn(n_element).astype(np.float32)
-    b = np.random.randn(n_element).astype(np.float32)
-    dest = np.zeros_like(a)
-    n = np.int32(n_element)
+    for _ in range(10):  # run 10 for verification
+        # args short cut (without short cut we can do cu_memcpy explicitly)
+        # TODO find a way to get args and cuda launch args from cubin automatically??
+        n_element = 1_000_000
+        a = np.random.randn(n_element).astype(np.float32)
+        b = np.random.randn(n_element).astype(np.float32)
+        dest = np.zeros_like(a)
+        n = np.int32(n_element)
+        
+        # kernel configs
+        block = (FLAGS.bx, 1, 1)
+        grid = (int(np.ceil((n_element+FLAGS.bx)//FLAGS.bx)), 1)
+        print(f'Grid: {grid}; Block: {block}')
 
-    # kernel configs
-    block = (FLAGS.bx, 1, 1)
-    grid = (int(np.ceil((n_element+FLAGS.bx)//FLAGS.bx)), 1)
+        # launch
+        kernel(drv.In(a), drv.In(b), drv.Out(dest),  n, #
+                block=block, grid=grid, # 
+        )
 
-    print(f'Grid: {grid}; Block: {block}')
-
-    # launch
-    kernel(drv.In(a), drv.In(b), drv.Out(dest),  n, #
-            block=block, grid=grid, # 
-    )
-
-    # verify result
-    print('CUBIN:')
-
-    # print(f'Result = {np.unique(c)[0]:#0x}')
-    # print(f'Result = {dest}')
-
-    c_ref = a+b
-    np.testing.assert_allclose(dest, c_ref) 
-    print(f'{FLAGS.fn} passed')
+        # verify result
+        # print('CUBIN:')
+        c_ref = a+b
+        np.testing.assert_allclose(dest, c_ref)  # if not pass, will raise
+        # print(f'{FLAGS.fn} passed')
 
 
     # benchmark
@@ -126,7 +122,9 @@ def main(_):
     result = benchmark(fn=lambda: kernel(a_gpu, b_gpu, dest_gpu,  n, #
             block=block, grid=grid, #
     ), # 
-    warmup=25, rep=100, percentiles=(0.2, 0.5, 0.8), # 
+    warmup=25, rep=100, #
+    # percentiles=(0.2, 0.5, 0.8), 
+    percentiles=None,
     )
     print('BENCHMARK:')
     print(result)

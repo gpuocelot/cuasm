@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+// compile with `nvcc vector_add.cu -cubin -o out.cubin -arch sm_80`
 __global__
 void vectorAdd(float *a, float *b, float *c, int n) {
     int i = blockIdx.x * blockDim.x + threadIdx.x;
