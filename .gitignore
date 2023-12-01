@@ -5,3 +5,5 @@ venv/
 *.cubin
 *.cuasm
 *_dump
+
+main
