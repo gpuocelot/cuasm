@@ -9,10 +9,12 @@
     "python.testing.unittestEnabled": true, 
     "python.autoComplete.extraPaths": [
         "venv/lib/python3.10/site-packages",
+        "benchmarks"
     ],
     "python.analysis.completeFunctionParens": true,
     "python.analysis.extraPaths": [
         "venv/lib/python3.10/site-packages",
+        "benchmarks"
         // "third_party/hidet/python",
     ],
 }
