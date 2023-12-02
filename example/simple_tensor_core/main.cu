@@ -12,9 +12,12 @@
 
 
 // Must be multiples of 16 for wmma code to work
-#define MATRIX_M 16384
-#define MATRIX_N 16384
-#define MATRIX_K 16384
+// #define MATRIX_M 16384
+// #define MATRIX_N 16384
+// #define MATRIX_K 16384
+#define MATRIX_M 4096
+#define MATRIX_N 4096
+#define MATRIX_K 4096
 
 // The only dimensions currently supported by WMMA
 const int WMMA_M = 16;
@@ -254,5 +257,5 @@ int main(int argc, char* argv[]) {
     // Convert filename to char*
     const char* filenameChar = filename.c_str();
 
- 	run(filenameChar, "_Z12wmma_exampleP6__halfS0_Pfiiiff", 5, 50);
+ 	run(filenameChar, "_Z12wmma_exampleP6__halfS0_Pfiiiff", 5, 20);
 }
