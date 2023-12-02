@@ -1,3 +1,4 @@
+from time import perf_counter
 import numpy as np
 
 from cuda import cudart
@@ -37,8 +38,8 @@ class Stream:
 
 class Event:
     def __init__(self, enable_timing: bool = False, blocking: bool = False):
-        self._enable_timing: bool = enable_timing
-        self._blocking: bool = blocking
+        self._enable_timing = enable_timing
+        self._blocking = blocking
 
         self._handle: cudaEvent_t
         if not enable_timing:
@@ -82,38 +83,46 @@ def benchmark(fn, warmup=25, rep=100, percentiles=(0.2, 0.5, 0.8)):
     fn()
     cuda_device_synchronize()
 
-    start_event = Event(enable_timing=True)
-    end_event = Event(enable_timing=True)
-    start_event.record(BENCHMARK_STREAM)
-    for _ in range(5):
+    # coarse-grained timing
+    est = 5
+    _t1= perf_counter()
+    for _ in range(est):
         fn()
-    end_event.record(BENCHMARK_STREAM)
     cuda_device_synchronize()
-
-    estimate_ms = end_event.elapsed_time(start_event) / 5
+    _t2 = perf_counter()
+    estimate_ms = (_t2-_t1)*1000/est
     n_warmup = max(1, int(warmup / estimate_ms))
     n_repeat = max(1, int(rep / estimate_ms))
 
-    start_event = [Event(enable_timing=True) for i in range(n_repeat)]
-    end_event = [Event(enable_timing=True) for i in range(n_repeat)]
+    # benchmark
+    # start_event = [Event(True, True) for i in range(n_repeat)]
+    # end_event = [Event(True, True) for i in range(n_repeat)]
+    start_event = Event(True, True)
+    end_event = Event(True, True)
 
     # Warm-up
+    total = 0
     for _ in range(n_warmup):
         fn()
+
     # Benchmark
-    for i in range(n_repeat):
-        start_event[i].record(BENCHMARK_STREAM)
+    for _ in range(n_repeat):
+        _t1= perf_counter()
+        start_event.record(BENCHMARK_STREAM)
         fn()
-        end_event[i].record(BENCHMARK_STREAM)
+        end_event.record(BENCHMARK_STREAM)
+        _t2 = perf_counter()
+        end_event.synchronize()
+        total += end_event.elapsed_time(start_event)
 
-    # Record clocks
-    cuda_device_synchronize()
+    print(f'estimate_ms = {estimate_ms}; number of repeat: {n_repeat}; number of warmup: {n_warmup}')
 
-    print(f'number of repeat: {n_repeat}; number of warmup: {n_warmup}')
-    times = np.array([e.elapsed_time(s) for s, e in zip(start_event, end_event)])
-    if percentiles:
-        percentiles = np.quantile(times, percentiles)
-        return tuple(percentiles)
-    else:
-        return np.mean(times).item()
+    return total/n_repeat
+
+    # times = np.array([e.elapsed_time(s) for s, e in zip(start_event, end_event)])
+    # if percentiles:
+    #     percentiles = np.quantile(times, percentiles)
+    #     return tuple(percentiles)
+    # else:
+    #     return np.mean(times).item()
 

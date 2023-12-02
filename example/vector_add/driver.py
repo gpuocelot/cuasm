@@ -22,7 +22,6 @@ from absl import flags
 FLAGS = flags.FLAGS
 flags.DEFINE_string("fn", "out", "cubin file name")
 flags.DEFINE_string("func", "_Z9vectorAddPfS_S_i", "func name after mingling")
-flags.DEFINE_integer("thr", 5, "thread num")
 flags.DEFINE_integer("bx", 256, "block dim x")
 
 def main(_):
@@ -30,10 +29,11 @@ def main(_):
     mod = drv.module_from_file(f'{FLAGS.fn}.cubin')
     kernel = mod.get_function(f'{FLAGS.func}')
 
-    for _ in range(10):  # run 10 for verification
+    # for _ in range(10):  # run 10 for verification
+    for _ in range(1):  # run 10 for verification
         # args short cut (without short cut we can do cu_memcpy explicitly)
         # TODO find a way to get args and cuda launch args from cubin automatically??
-        n_element = 1_000_000
+        n_element = 10_000_000
         a = np.random.randn(n_element).astype(np.float32)
         b = np.random.randn(n_element).astype(np.float32)
         dest = np.zeros_like(a)
