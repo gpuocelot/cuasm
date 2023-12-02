@@ -177,7 +177,7 @@ void run(const char * fn, const char* func, int warmup, int repeats) {
     printf("blockDim %d, %d\n", blockDim.x, blockDim.y);  // 128, 4
 
     // Launch the kernel
-    cuLaunchKernel(
+    cudaDriverCheck(cuLaunchKernel(
         kernel,
         gridDim.x, gridDim.y, gridDim.z,
         blockDim.x, blockDim.y, blockDim.z,
@@ -185,7 +185,7 @@ void run(const char * fn, const char* func, int warmup, int repeats) {
         NULL, /* Stream identifier - if using streams */
         args, /* Kernel arguments */
         NULL /* Extra options */
-    );
+    ));
     cudaDeviceSynchronize();
 
     // benchmark
@@ -193,7 +193,7 @@ void run(const char * fn, const char* func, int warmup, int repeats) {
 
     // Warm-up iterations
     for (int i = 0; i < warmup; ++i) {
-        cuLaunchKernel(
+        cudaDriverCheck(cuLaunchKernel(
             kernel,
             gridDim.x, gridDim.y, gridDim.z,
             blockDim.x, blockDim.y, blockDim.z,
@@ -201,22 +201,22 @@ void run(const char * fn, const char* func, int warmup, int repeats) {
             NULL, /* Stream identifier - if using streams */
             args, /* Kernel arguments */
             NULL /* Extra options */
-        );
+        ));
         cudaDeviceSynchronize();
     }
 
     float totalMilliseconds = 0;
     for (int i = 0; i < repeats; ++i) {
         cudaErrCheck(cudaEventRecord(startWMMA));
-        cuLaunchKernel(
+        cudaDriverCheck(cuLaunchKernel(
             kernel,
             gridDim.x, gridDim.y, gridDim.z,
             blockDim.x, blockDim.y, blockDim.z,
-            0, /* Shared memory size - if using shared memory */
+            0, /* Dynamic Shared memory size - if using shared memory */
             NULL, /* Stream identifier - if using streams */
             args, /* Kernel arguments */
             NULL /* Extra options */
-        );
+        ));
         cudaErrCheck(cudaEventRecord(stopWMMA));
         cudaErrCheck(cudaEventSynchronize(stopWMMA));
 
@@ -254,5 +254,5 @@ int main(int argc, char* argv[]) {
     // Convert filename to char*
     const char* filenameChar = filename.c_str();
 
- 	run(filenameChar, "_Z12wmma_exampleP6__halfS0_Pfiiiff", 5, 20);
+ 	run(filenameChar, "_Z12wmma_exampleP6__halfS0_Pfiiiff", 5, 50);
 }
