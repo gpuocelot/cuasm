@@ -8,6 +8,8 @@
 #include <iostream>
 #include <stdio.h>
 #include <string.h>
+#include <string>
+
 
 // Must be multiples of 16 for wmma code to work
 #define MATRIX_M 16384
@@ -155,7 +157,7 @@ void run(const char * fn, const char* func, int warmup, int repeats) {
     float beta = 2.0f;
 
     printf("MMA workload...\n");
-    printf("\nM = %d, N = %d, K = %d. alpha = %f, beta = %f\n\n", MATRIX_M, MATRIX_N, MATRIX_K, alpha, beta);
+    printf("M = %d, N = %d, K = %d. alpha = %f, beta = %f\n\n", MATRIX_M, MATRIX_N, MATRIX_K, alpha, beta);
 
 	void* args[] = { &a_fp16, &b_fp16, &c_wmma, &M, &N, &K, &alpha, &beta };
 
@@ -231,7 +233,33 @@ void run(const char * fn, const char* func, int warmup, int repeats) {
 
 
 
-int main(){
-	run("out", "_Z12wmma_exampleP6__halfS0_Pfiiiff", 5, 20);
-	return 0;
+// int main(){
+// 	// run("out", "_Z12wmma_exampleP6__halfS0_Pfiiiff", 5, 20);
+// 	run("test", "_Z12wmma_exampleP6__halfS0_Pfiiiff", 5, 20);
+// 	return 0;
+// }
+
+int main(int argc, char* argv[]) {
+    std::string filename = "out"; // Default filename
+    
+    // Parse command line arguments
+    for (int i = 1; i < argc; ++i) {
+        if (std::string(argv[i]) == "--fn") {
+            if (i + 1 < argc) {
+                filename = argv[i + 1]; // Get the filename argument
+                break;
+            } else {
+                std::cerr << "Error: --fn requires an argument." << std::endl;
+                return 1;
+            }
+        }
+    }
+    
+    // Use the filename argument
+    std::cout << "Filename: " << filename << ".cubin" << std::endl;
+    
+    // Convert filename to char*
+    const char* filenameChar = filename.c_str();
+
+ 	run(filenameChar, "_Z12wmma_exampleP6__halfS0_Pfiiiff", 5, 20);
 }
