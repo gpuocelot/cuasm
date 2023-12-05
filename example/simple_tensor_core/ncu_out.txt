@@ -1,0 +1,634 @@
+Filename: out.cubin
+==PROF== Connected to process 1079593 (/home/gh512/workspace/CuAssembler/example/simple_tensor_core/main)
+==PROF== Profiling "gen_sequenced" - 0 (1/10): 0%....50%....100% - 10 passes
+==PROF== Profiling "gen_sequenced" - 1 (2/10): 0%....50%....100% - 10 passes
+==PROF== Profiling "convertFp32ToFp16" - 2 (3/10): 0%....50%....100% - 10 passes
+==PROF== Profiling "convertFp32ToFp16" - 3 (4/10): 0%....50%....100% - 10 passes
+==PROF== Profiling "gen_sequenced" - 4 (5/10): 0%....50%....100% - 10 passes
+==PROF== Profiling "wmma_example" - 5 (6/10): 0%....50%....100% - 10 passes
+==PROF== Profiling "wmma_example" - 6 (7/10): 0%....50%....100% - 10 passes
+==PROF== Profiling "wmma_example" - 7 (8/10): 0%....50%....100% - 10 passes
+==PROF== Profiling "wmma_example" - 8 (9/10): 0%....50%....100% - 10 passes
+==PROF== Profiling "wmma_example" - 9 (10/10): 0%....50%....100% - 10 passes
+MMA workload...
+M = 4096, N = 4096, K = 4096. alpha = 2.000000, beta = 2.000000
+
+gridDim 64, 64
+blockDim 128, 4
+
+benchmark...
+warmup 5; repeats 20
+average runtime 8.102400ms
+==PROF== Disconnected from process 1079593
+[1079593] main@127.0.0.1
+  void gen_sequenced<curandStateXORWOW, float, int, &curand_uniform_noargs<curandStateXORWOW>, rng_config<curandStateXORWOW, (curandOrdering)101>>(T1 *, T2 *, unsigned long, unsigned long, T3) (64, 1, 1)x(64, 1, 1), Context 1, Stream 7, Device 0, CC 8.0
+    Section: GPU Speed Of Light Throughput
+    ----------------------- ------------- ------------
+    Metric Name               Metric Unit Metric Value
+    ----------------------- ------------- ------------
+    DRAM Frequency          cycle/nsecond         1.51
+    SM Frequency            cycle/nsecond         1.06
+    Elapsed Cycles                  cycle      148,639
+    Memory Throughput                   %        18.57
+    DRAM Throughput                     %        17.58
+    Duration                      usecond       139.90
+    L1/TEX Cache Throughput             %        22.52
+    L2 Cache Throughput                 %        25.70
+    SM Active Cycles                cycle    86,613.04
+    Compute (SM) Throughput             %        11.45
+    ----------------------- ------------- ------------
+
+    OPT   This kernel grid is too small to fill the available resources on this device, resulting in only 0.0 full      
+          waves across all SMs. Look at Launch Statistics for more details.                                             
+
+    Section: Launch Statistics
+    -------------------------------- --------------- ---------------
+    Metric Name                          Metric Unit    Metric Value
+    -------------------------------- --------------- ---------------
+    Block Size                                                    64
+    Function Cache Configuration                     CachePreferNone
+    Grid Size                                                     64
+    Registers Per Thread             register/thread              32
+    Shared Memory Configuration Size           Kbyte           32.77
+    Driver Shared Memory Per Block       Kbyte/block            1.02
+    Dynamic Shared Memory Per Block       byte/block               0
+    Static Shared Memory Per Block        byte/block               0
+    Threads                                   thread           4,096
+    Waves Per SM                                                0.02
+    -------------------------------- --------------- ---------------
+
+    OPT   Estimated Speedup: 40.74%                                                                                     
+          The grid for this launch is configured to execute only 64 blocks, which is less than the GPU's 108            
+          multiprocessors. This can underutilize some multiprocessors. If you do not intend to execute this kernel      
+          concurrently with other workloads, consider reducing the block size to have at least one block per            
+          multiprocessor or increase the size of the grid to fully utilize the available hardware resources. See the    
+          Hardware Model (https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#metrics-hw-model)            
+          description for more details on launch configurations.                                                        
+
+    Section: Occupancy
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Block Limit SM                        block           32
+    Block Limit Registers                 block           32
+    Block Limit Shared Mem                block           32
+    Block Limit Warps                     block           32
+    Theoretical Active Warps per SM        warp           64
+    Theoretical Occupancy                     %          100
+    Achieved Occupancy                        %         3.12
+    Achieved Active Warps Per SM           warp         2.00
+    ------------------------------- ----------- ------------
+
+    OPT   Estimated Speedup: 96.88%                                                                                     
+          This kernel's theoretical occupancy is not impacted by any block limit. The difference between calculated     
+          theoretical (100.0%) and measured achieved occupancy (3.1%) can be the result of warp scheduling overheads    
+          or workload imbalances during the kernel execution. Load imbalances can occur between warps within a block    
+          as well as across blocks of the same kernel. See the CUDA Best Practices Guide                                
+          (https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy) for more details on           
+          optimizing occupancy.                                                                                         
+
+  void gen_sequenced<curandStateXORWOW, float, int, &curand_uniform_noargs<curandStateXORWOW>, rng_config<curandStateXORWOW, (curandOrdering)101>>(T1 *, T2 *, unsigned long, unsigned long, T3) (64, 1, 1)x(64, 1, 1), Context 1, Stream 7, Device 0, CC 8.0
+    Section: GPU Speed Of Light Throughput
+    ----------------------- ------------- ------------
+    Metric Name               Metric Unit Metric Value
+    ----------------------- ------------- ------------
+    DRAM Frequency          cycle/nsecond         1.51
+    SM Frequency            cycle/nsecond         1.06
+    Elapsed Cycles                  cycle      148,754
+    Memory Throughput                   %        18.54
+    DRAM Throughput                     %        17.56
+    Duration                      usecond       139.81
+    L1/TEX Cache Throughput             %        22.52
+    L2 Cache Throughput                 %        25.57
+    SM Active Cycles                cycle    86,612.40
+    Compute (SM) Throughput             %        11.44
+    ----------------------- ------------- ------------
+
+    OPT   This kernel grid is too small to fill the available resources on this device, resulting in only 0.0 full      
+          waves across all SMs. Look at Launch Statistics for more details.                                             
+
+    Section: Launch Statistics
+    -------------------------------- --------------- ---------------
+    Metric Name                          Metric Unit    Metric Value
+    -------------------------------- --------------- ---------------
+    Block Size                                                    64
+    Function Cache Configuration                     CachePreferNone
+    Grid Size                                                     64
+    Registers Per Thread             register/thread              32
+    Shared Memory Configuration Size           Kbyte           32.77
+    Driver Shared Memory Per Block       Kbyte/block            1.02
+    Dynamic Shared Memory Per Block       byte/block               0
+    Static Shared Memory Per Block        byte/block               0
+    Threads                                   thread           4,096
+    Waves Per SM                                                0.02
+    -------------------------------- --------------- ---------------
+
+    OPT   Estimated Speedup: 40.74%                                                                                     
+          The grid for this launch is configured to execute only 64 blocks, which is less than the GPU's 108            
+          multiprocessors. This can underutilize some multiprocessors. If you do not intend to execute this kernel      
+          concurrently with other workloads, consider reducing the block size to have at least one block per            
+          multiprocessor or increase the size of the grid to fully utilize the available hardware resources. See the    
+          Hardware Model (https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#metrics-hw-model)            
+          description for more details on launch configurations.                                                        
+
+    Section: Occupancy
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Block Limit SM                        block           32
+    Block Limit Registers                 block           32
+    Block Limit Shared Mem                block           32
+    Block Limit Warps                     block           32
+    Theoretical Active Warps per SM        warp           64
+    Theoretical Occupancy                     %          100
+    Achieved Occupancy                        %         3.12
+    Achieved Active Warps Per SM           warp         2.00
+    ------------------------------- ----------- ------------
+
+    OPT   Estimated Speedup: 96.88%                                                                                     
+          This kernel's theoretical occupancy is not impacted by any block limit. The difference between calculated     
+          theoretical (100.0%) and measured achieved occupancy (3.1%) can be the result of warp scheduling overheads    
+          or workload imbalances during the kernel execution. Load imbalances can occur between warps within a block    
+          as well as across blocks of the same kernel. See the CUDA Best Practices Guide                                
+          (https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy) for more details on           
+          optimizing occupancy.                                                                                         
+
+  convertFp32ToFp16(__half *, float *, int) (65536, 1, 1)x(256, 1, 1), Context 1, Stream 7, Device 0, CC 8.0
+    Section: GPU Speed Of Light Throughput
+    ----------------------- ------------- ------------
+    Metric Name               Metric Unit Metric Value
+    ----------------------- ------------- ------------
+    DRAM Frequency          cycle/nsecond         1.49
+    SM Frequency            cycle/nsecond         1.05
+    Elapsed Cycles                  cycle       92,672
+    Memory Throughput                   %        54.10
+    DRAM Throughput                     %        54.10
+    Duration                      usecond        88.22
+    L1/TEX Cache Throughput             %        17.70
+    L2 Cache Throughput                 %        60.87
+    SM Active Cycles                cycle    89,202.51
+    Compute (SM) Throughput             %        19.74
+    ----------------------- ------------- ------------
+
+    OPT   This kernel exhibits low compute throughput and memory bandwidth utilization relative to the peak performance 
+          of this device. Achieved compute throughput and/or memory bandwidth below 60.0% of peak typically indicate    
+          latency issues. Look at Scheduler Statistics and Warp State Statistics for potential reasons.                 
+
+    Section: Launch Statistics
+    -------------------------------- --------------- ---------------
+    Metric Name                          Metric Unit    Metric Value
+    -------------------------------- --------------- ---------------
+    Block Size                                                   256
+    Function Cache Configuration                     CachePreferNone
+    Grid Size                                                 65,536
+    Registers Per Thread             register/thread              16
+    Shared Memory Configuration Size           Kbyte           32.77
+    Driver Shared Memory Per Block       Kbyte/block            1.02
+    Dynamic Shared Memory Per Block       byte/block               0
+    Static Shared Memory Per Block        byte/block               0
+    Threads                                   thread      16,777,216
+    Waves Per SM                                               75.85
+    -------------------------------- --------------- ---------------
+
+    Section: Occupancy
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Block Limit SM                        block           32
+    Block Limit Registers                 block           16
+    Block Limit Shared Mem                block           32
+    Block Limit Warps                     block            8
+    Theoretical Active Warps per SM        warp           64
+    Theoretical Occupancy                     %          100
+    Achieved Occupancy                        %        74.88
+    Achieved Active Warps Per SM           warp        47.93
+    ------------------------------- ----------- ------------
+
+    OPT   Estimated Speedup: 25.12%                                                                                     
+          This kernel's theoretical occupancy is not impacted by any block limit. The difference between calculated     
+          theoretical (100.0%) and measured achieved occupancy (74.9%) can be the result of warp scheduling overheads   
+          or workload imbalances during the kernel execution. Load imbalances can occur between warps within a block    
+          as well as across blocks of the same kernel. See the CUDA Best Practices Guide                                
+          (https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy) for more details on           
+          optimizing occupancy.                                                                                         
+
+  convertFp32ToFp16(__half *, float *, int) (65536, 1, 1)x(256, 1, 1), Context 1, Stream 7, Device 0, CC 8.0
+    Section: GPU Speed Of Light Throughput
+    ----------------------- ------------- ------------
+    Metric Name               Metric Unit Metric Value
+    ----------------------- ------------- ------------
+    DRAM Frequency          cycle/nsecond         1.50
+    SM Frequency            cycle/nsecond         1.05
+    Elapsed Cycles                  cycle       92,695
+    Memory Throughput                   %        54.00
+    DRAM Throughput                     %        54.00
+    Duration                      usecond        87.87
+    L1/TEX Cache Throughput             %        17.74
+    L2 Cache Throughput                 %        60.77
+    SM Active Cycles                cycle    88,998.67
+    Compute (SM) Throughput             %        19.73
+    ----------------------- ------------- ------------
+
+    OPT   This kernel exhibits low compute throughput and memory bandwidth utilization relative to the peak performance 
+          of this device. Achieved compute throughput and/or memory bandwidth below 60.0% of peak typically indicate    
+          latency issues. Look at Scheduler Statistics and Warp State Statistics for potential reasons.                 
+
+    Section: Launch Statistics
+    -------------------------------- --------------- ---------------
+    Metric Name                          Metric Unit    Metric Value
+    -------------------------------- --------------- ---------------
+    Block Size                                                   256
+    Function Cache Configuration                     CachePreferNone
+    Grid Size                                                 65,536
+    Registers Per Thread             register/thread              16
+    Shared Memory Configuration Size           Kbyte           32.77
+    Driver Shared Memory Per Block       Kbyte/block            1.02
+    Dynamic Shared Memory Per Block       byte/block               0
+    Static Shared Memory Per Block        byte/block               0
+    Threads                                   thread      16,777,216
+    Waves Per SM                                               75.85
+    -------------------------------- --------------- ---------------
+
+    Section: Occupancy
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Block Limit SM                        block           32
+    Block Limit Registers                 block           16
+    Block Limit Shared Mem                block           32
+    Block Limit Warps                     block            8
+    Theoretical Active Warps per SM        warp           64
+    Theoretical Occupancy                     %          100
+    Achieved Occupancy                        %        74.86
+    Achieved Active Warps Per SM           warp        47.91
+    ------------------------------- ----------- ------------
+
+    OPT   Estimated Speedup: 25.14%                                                                                     
+          This kernel's theoretical occupancy is not impacted by any block limit. The difference between calculated     
+          theoretical (100.0%) and measured achieved occupancy (74.9%) can be the result of warp scheduling overheads   
+          or workload imbalances during the kernel execution. Load imbalances can occur between warps within a block    
+          as well as across blocks of the same kernel. See the CUDA Best Practices Guide                                
+          (https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy) for more details on           
+          optimizing occupancy.                                                                                         
+
+  void gen_sequenced<curandStateXORWOW, float, int, &curand_uniform_noargs<curandStateXORWOW>, rng_config<curandStateXORWOW, (curandOrdering)101>>(T1 *, T2 *, unsigned long, unsigned long, T3) (64, 1, 1)x(64, 1, 1), Context 1, Stream 7, Device 0, CC 8.0
+    Section: GPU Speed Of Light Throughput
+    ----------------------- ------------- ------------
+    Metric Name               Metric Unit Metric Value
+    ----------------------- ------------- ------------
+    DRAM Frequency          cycle/nsecond         1.51
+    SM Frequency            cycle/nsecond         1.06
+    Elapsed Cycles                  cycle      148,572
+    Memory Throughput                   %        18.57
+    DRAM Throughput                     %        17.59
+    Duration                      usecond       139.68
+    L1/TEX Cache Throughput             %        22.52
+    L2 Cache Throughput                 %        25.70
+    SM Active Cycles                cycle    86,594.31
+    Compute (SM) Throughput             %        11.45
+    ----------------------- ------------- ------------
+
+    OPT   This kernel grid is too small to fill the available resources on this device, resulting in only 0.0 full      
+          waves across all SMs. Look at Launch Statistics for more details.                                             
+
+    Section: Launch Statistics
+    -------------------------------- --------------- ---------------
+    Metric Name                          Metric Unit    Metric Value
+    -------------------------------- --------------- ---------------
+    Block Size                                                    64
+    Function Cache Configuration                     CachePreferNone
+    Grid Size                                                     64
+    Registers Per Thread             register/thread              32
+    Shared Memory Configuration Size           Kbyte           32.77
+    Driver Shared Memory Per Block       Kbyte/block            1.02
+    Dynamic Shared Memory Per Block       byte/block               0
+    Static Shared Memory Per Block        byte/block               0
+    Threads                                   thread           4,096
+    Waves Per SM                                                0.02
+    -------------------------------- --------------- ---------------
+
+    OPT   Estimated Speedup: 40.74%                                                                                     
+          The grid for this launch is configured to execute only 64 blocks, which is less than the GPU's 108            
+          multiprocessors. This can underutilize some multiprocessors. If you do not intend to execute this kernel      
+          concurrently with other workloads, consider reducing the block size to have at least one block per            
+          multiprocessor or increase the size of the grid to fully utilize the available hardware resources. See the    
+          Hardware Model (https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#metrics-hw-model)            
+          description for more details on launch configurations.                                                        
+
+    Section: Occupancy
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Block Limit SM                        block           32
+    Block Limit Registers                 block           32
+    Block Limit Shared Mem                block           32
+    Block Limit Warps                     block           32
+    Theoretical Active Warps per SM        warp           64
+    Theoretical Occupancy                     %          100
+    Achieved Occupancy                        %         3.12
+    Achieved Active Warps Per SM           warp         2.00
+    ------------------------------- ----------- ------------
+
+    OPT   Estimated Speedup: 96.88%                                                                                     
+          This kernel's theoretical occupancy is not impacted by any block limit. The difference between calculated     
+          theoretical (100.0%) and measured achieved occupancy (3.1%) can be the result of warp scheduling overheads    
+          or workload imbalances during the kernel execution. Load imbalances can occur between warps within a block    
+          as well as across blocks of the same kernel. See the CUDA Best Practices Guide                                
+          (https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy) for more details on           
+          optimizing occupancy.                                                                                         
+
+  wmma_example(__half *, __half *, float *, int, int, int, float, float) (64, 64, 1)x(128, 4, 1), Context 1, Stream 7, Device 0, CC 8.0
+    Section: GPU Speed Of Light Throughput
+    ----------------------- ------------- -------------
+    Metric Name               Metric Unit  Metric Value
+    ----------------------- ------------- -------------
+    DRAM Frequency          cycle/nsecond          1.51
+    SM Frequency            cycle/nsecond          1.06
+    Elapsed Cycles                  cycle    11,283,617
+    Memory Throughput                   %         96.78
+    DRAM Throughput                     %          6.50
+    Duration                      msecond         10.61
+    L1/TEX Cache Throughput             %         99.63
+    L2 Cache Throughput                 %         25.11
+    SM Active Cycles                cycle 10,960,916.06
+    Compute (SM) Throughput             %         18.01
+    ----------------------- ------------- -------------
+
+    INF   The kernel is utilizing greater than 80.0% of the available compute or memory performance of the device. To   
+          further improve performance, work will likely need to be shifted from the most utilized to another unit.      
+          Start by analyzing L1 in the Memory Workload Analysis section.                                                
+
+    Section: Launch Statistics
+    -------------------------------- --------------- ---------------
+    Metric Name                          Metric Unit    Metric Value
+    -------------------------------- --------------- ---------------
+    Block Size                                                   512
+    Function Cache Configuration                     CachePreferNone
+    Grid Size                                                  4,096
+    Registers Per Thread             register/thread              32
+    Shared Memory Configuration Size           Kbyte           16.38
+    Driver Shared Memory Per Block       Kbyte/block            1.02
+    Dynamic Shared Memory Per Block       byte/block               0
+    Static Shared Memory Per Block        byte/block               0
+    Threads                                   thread       2,097,152
+    Waves Per SM                                                9.48
+    -------------------------------- --------------- ---------------
+
+    Section: Occupancy
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Block Limit SM                        block           32
+    Block Limit Registers                 block            4
+    Block Limit Shared Mem                block           16
+    Block Limit Warps                     block            4
+    Theoretical Active Warps per SM        warp           64
+    Theoretical Occupancy                     %          100
+    Achieved Occupancy                        %        88.75
+    Achieved Active Warps Per SM           warp        56.80
+    ------------------------------- ----------- ------------
+
+    OPT   Estimated Speedup: 11.25%                                                                                     
+          This kernel's theoretical occupancy is not impacted by any block limit. The difference between calculated     
+          theoretical (100.0%) and measured achieved occupancy (88.7%) can be the result of warp scheduling overheads   
+          or workload imbalances during the kernel execution. Load imbalances can occur between warps within a block    
+          as well as across blocks of the same kernel. See the CUDA Best Practices Guide                                
+          (https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy) for more details on           
+          optimizing occupancy.                                                                                         
+
+  wmma_example(__half *, __half *, float *, int, int, int, float, float) (64, 64, 1)x(128, 4, 1), Context 1, Stream 7, Device 0, CC 8.0
+    Section: GPU Speed Of Light Throughput
+    ----------------------- ------------- -------------
+    Metric Name               Metric Unit  Metric Value
+    ----------------------- ------------- -------------
+    DRAM Frequency          cycle/nsecond          1.51
+    SM Frequency            cycle/nsecond          1.06
+    Elapsed Cycles                  cycle    11,279,858
+    Memory Throughput                   %         96.81
+    DRAM Throughput                     %          6.37
+    Duration                      msecond         10.61
+    L1/TEX Cache Throughput             %         99.64
+    L2 Cache Throughput                 %         24.88
+    SM Active Cycles                cycle 10,960,156.28
+    Compute (SM) Throughput             %         18.01
+    ----------------------- ------------- -------------
+
+    INF   The kernel is utilizing greater than 80.0% of the available compute or memory performance of the device. To   
+          further improve performance, work will likely need to be shifted from the most utilized to another unit.      
+          Start by analyzing L1 in the Memory Workload Analysis section.                                                
+
+    Section: Launch Statistics
+    -------------------------------- --------------- ---------------
+    Metric Name                          Metric Unit    Metric Value
+    -------------------------------- --------------- ---------------
+    Block Size                                                   512
+    Function Cache Configuration                     CachePreferNone
+    Grid Size                                                  4,096
+    Registers Per Thread             register/thread              32
+    Shared Memory Configuration Size           Kbyte           16.38
+    Driver Shared Memory Per Block       Kbyte/block            1.02
+    Dynamic Shared Memory Per Block       byte/block               0
+    Static Shared Memory Per Block        byte/block               0
+    Threads                                   thread       2,097,152
+    Waves Per SM                                                9.48
+    -------------------------------- --------------- ---------------
+
+    Section: Occupancy
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Block Limit SM                        block           32
+    Block Limit Registers                 block            4
+    Block Limit Shared Mem                block           16
+    Block Limit Warps                     block            4
+    Theoretical Active Warps per SM        warp           64
+    Theoretical Occupancy                     %          100
+    Achieved Occupancy                        %        88.44
+    Achieved Active Warps Per SM           warp        56.60
+    ------------------------------- ----------- ------------
+
+    OPT   Estimated Speedup: 11.56%                                                                                     
+          This kernel's theoretical occupancy is not impacted by any block limit. The difference between calculated     
+          theoretical (100.0%) and measured achieved occupancy (88.4%) can be the result of warp scheduling overheads   
+          or workload imbalances during the kernel execution. Load imbalances can occur between warps within a block    
+          as well as across blocks of the same kernel. See the CUDA Best Practices Guide                                
+          (https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy) for more details on           
+          optimizing occupancy.                                                                                         
+
+  wmma_example(__half *, __half *, float *, int, int, int, float, float) (64, 64, 1)x(128, 4, 1), Context 1, Stream 7, Device 0, CC 8.0
+    Section: GPU Speed Of Light Throughput
+    ----------------------- ------------- -------------
+    Metric Name               Metric Unit  Metric Value
+    ----------------------- ------------- -------------
+    DRAM Frequency          cycle/nsecond          1.51
+    SM Frequency            cycle/nsecond          1.06
+    Elapsed Cycles                  cycle    11,284,309
+    Memory Throughput                   %         96.78
+    DRAM Throughput                     %          6.40
+    Duration                      msecond         10.60
+    L1/TEX Cache Throughput             %         99.66
+    L2 Cache Throughput                 %         24.83
+    SM Active Cycles                cycle 10,957,757.56
+    Compute (SM) Throughput             %         18.00
+    ----------------------- ------------- -------------
+
+    INF   The kernel is utilizing greater than 80.0% of the available compute or memory performance of the device. To   
+          further improve performance, work will likely need to be shifted from the most utilized to another unit.      
+          Start by analyzing L1 in the Memory Workload Analysis section.                                                
+
+    Section: Launch Statistics
+    -------------------------------- --------------- ---------------
+    Metric Name                          Metric Unit    Metric Value
+    -------------------------------- --------------- ---------------
+    Block Size                                                   512
+    Function Cache Configuration                     CachePreferNone
+    Grid Size                                                  4,096
+    Registers Per Thread             register/thread              32
+    Shared Memory Configuration Size           Kbyte           16.38
+    Driver Shared Memory Per Block       Kbyte/block            1.02
+    Dynamic Shared Memory Per Block       byte/block               0
+    Static Shared Memory Per Block        byte/block               0
+    Threads                                   thread       2,097,152
+    Waves Per SM                                                9.48
+    -------------------------------- --------------- ---------------
+
+    Section: Occupancy
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Block Limit SM                        block           32
+    Block Limit Registers                 block            4
+    Block Limit Shared Mem                block           16
+    Block Limit Warps                     block            4
+    Theoretical Active Warps per SM        warp           64
+    Theoretical Occupancy                     %          100
+    Achieved Occupancy                        %        87.95
+    Achieved Active Warps Per SM           warp        56.29
+    ------------------------------- ----------- ------------
+
+    OPT   Estimated Speedup: 12.05%                                                                                     
+          This kernel's theoretical occupancy is not impacted by any block limit. The difference between calculated     
+          theoretical (100.0%) and measured achieved occupancy (87.9%) can be the result of warp scheduling overheads   
+          or workload imbalances during the kernel execution. Load imbalances can occur between warps within a block    
+          as well as across blocks of the same kernel. See the CUDA Best Practices Guide                                
+          (https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy) for more details on           
+          optimizing occupancy.                                                                                         
+
+  wmma_example(__half *, __half *, float *, int, int, int, float, float) (64, 64, 1)x(128, 4, 1), Context 1, Stream 7, Device 0, CC 8.0
+    Section: GPU Speed Of Light Throughput
+    ----------------------- ------------- -------------
+    Metric Name               Metric Unit  Metric Value
+    ----------------------- ------------- -------------
+    DRAM Frequency          cycle/nsecond          1.51
+    SM Frequency            cycle/nsecond          1.06
+    Elapsed Cycles                  cycle    11,291,396
+    Memory Throughput                   %         96.71
+    DRAM Throughput                     %          6.42
+    Duration                      msecond         10.60
+    L1/TEX Cache Throughput             %         99.65
+    L2 Cache Throughput                 %         24.89
+    SM Active Cycles                cycle 10,959,190.79
+    Compute (SM) Throughput             %         17.99
+    ----------------------- ------------- -------------
+
+    INF   The kernel is utilizing greater than 80.0% of the available compute or memory performance of the device. To   
+          further improve performance, work will likely need to be shifted from the most utilized to another unit.      
+          Start by analyzing L1 in the Memory Workload Analysis section.                                                
+
+    Section: Launch Statistics
+    -------------------------------- --------------- ---------------
+    Metric Name                          Metric Unit    Metric Value
+    -------------------------------- --------------- ---------------
+    Block Size                                                   512
+    Function Cache Configuration                     CachePreferNone
+    Grid Size                                                  4,096
+    Registers Per Thread             register/thread              32
+    Shared Memory Configuration Size           Kbyte           16.38
+    Driver Shared Memory Per Block       Kbyte/block            1.02
+    Dynamic Shared Memory Per Block       byte/block               0
+    Static Shared Memory Per Block        byte/block               0
+    Threads                                   thread       2,097,152
+    Waves Per SM                                                9.48
+    -------------------------------- --------------- ---------------
+
+    Section: Occupancy
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Block Limit SM                        block           32
+    Block Limit Registers                 block            4
+    Block Limit Shared Mem                block           16
+    Block Limit Warps                     block            4
+    Theoretical Active Warps per SM        warp           64
+    Theoretical Occupancy                     %          100
+    Achieved Occupancy                        %        88.30
+    Achieved Active Warps Per SM           warp        56.51
+    ------------------------------- ----------- ------------
+
+    OPT   Estimated Speedup: 11.7%                                                                                      
+          This kernel's theoretical occupancy is not impacted by any block limit. The difference between calculated     
+          theoretical (100.0%) and measured achieved occupancy (88.3%) can be the result of warp scheduling overheads   
+          or workload imbalances during the kernel execution. Load imbalances can occur between warps within a block    
+          as well as across blocks of the same kernel. See the CUDA Best Practices Guide                                
+          (https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy) for more details on           
+          optimizing occupancy.                                                                                         
+
+  wmma_example(__half *, __half *, float *, int, int, int, float, float) (64, 64, 1)x(128, 4, 1), Context 1, Stream 7, Device 0, CC 8.0
+    Section: GPU Speed Of Light Throughput
+    ----------------------- ------------- -------------
+    Metric Name               Metric Unit  Metric Value
+    ----------------------- ------------- -------------
+    DRAM Frequency          cycle/nsecond          1.51
+    SM Frequency            cycle/nsecond          1.07
+    Elapsed Cycles                  cycle    11,279,783
+    Memory Throughput                   %         96.81
+    DRAM Throughput                     %          6.34
+    Duration                      msecond         10.59
+    L1/TEX Cache Throughput             %         99.64
+    L2 Cache Throughput                 %         24.86
+    SM Active Cycles                cycle 10,960,306.68
+    Compute (SM) Throughput             %         18.01
+    ----------------------- ------------- -------------
+
+    INF   The kernel is utilizing greater than 80.0% of the available compute or memory performance of the device. To   
+          further improve performance, work will likely need to be shifted from the most utilized to another unit.      
+          Start by analyzing L1 in the Memory Workload Analysis section.                                                
+
+    Section: Launch Statistics
+    -------------------------------- --------------- ---------------
+    Metric Name                          Metric Unit    Metric Value
+    -------------------------------- --------------- ---------------
+    Block Size                                                   512
+    Function Cache Configuration                     CachePreferNone
+    Grid Size                                                  4,096
+    Registers Per Thread             register/thread              32
+    Shared Memory Configuration Size           Kbyte           16.38
+    Driver Shared Memory Per Block       Kbyte/block            1.02
+    Dynamic Shared Memory Per Block       byte/block               0
+    Static Shared Memory Per Block        byte/block               0
+    Threads                                   thread       2,097,152
+    Waves Per SM                                                9.48
+    -------------------------------- --------------- ---------------
+
+    Section: Occupancy
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Block Limit SM                        block           32
+    Block Limit Registers                 block            4
+    Block Limit Shared Mem                block           16
+    Block Limit Warps                     block            4
+    Theoretical Active Warps per SM        warp           64
+    Theoretical Occupancy                     %          100
+    Achieved Occupancy                        %        88.58
+    Achieved Active Warps Per SM           warp        56.69
+    ------------------------------- ----------- ------------
+
+    OPT   Estimated Speedup: 11.42%                                                                                     
+          This kernel's theoretical occupancy is not impacted by any block limit. The difference between calculated     
+          theoretical (100.0%) and measured achieved occupancy (88.6%) can be the result of warp scheduling overheads   
+          or workload imbalances during the kernel execution. Load imbalances can occur between warps within a block    
+          as well as across blocks of the same kernel. See the CUDA Best Practices Guide                                
+          (https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy) for more details on           
+          optimizing occupancy.                                                                                         
+

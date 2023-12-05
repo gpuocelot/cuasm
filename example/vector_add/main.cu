@@ -1,6 +1,7 @@
 
 
 // compile: nvcc -o main main.cu  -lcublas -lcudart -lcuda -lcurand
+// ncu profiler: sudo /usr/local/cuda/bin/ncu --target-processes all --devices 0   --launch-skip 1 --launch-count 10  ./main
 #include <cuda.h>
 #include <cublas_v2.h>
 #include <curand.h>
@@ -163,7 +164,7 @@ void run(const char * fn, const char* func, int n, int warmup, int repeats) {
 int main(int argc, char* argv[]) {
     std::string filename = "out"; // Default filename
     int n = 1000000;  // default 1M
-    
+
     // Parse command line arguments
     for (int i = 1; i < argc; ++i) {
         if (std::string(argv[i]) == "--fn") {
@@ -184,10 +185,10 @@ int main(int argc, char* argv[]) {
             }
         }
     }
-    
+
     // Use the filename argument
     std::cout << "Filename: " << filename << ".cubin" << std::endl;
-    
+
     // Convert filename to char*
     const char* filenameChar = filename.c_str();
 
