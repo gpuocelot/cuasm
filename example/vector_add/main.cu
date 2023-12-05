@@ -2,6 +2,8 @@
 
 // compile: nvcc -o main main.cu  -lcublas -lcudart -lcuda -lcurand
 // ncu profiler: sudo /usr/local/cuda/bin/ncu --target-processes all --devices 0   --launch-skip 1 --launch-count 10  ./main
+//              use --section to see different metrics
+//              see: https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#sets-and-sections
 #include <cuda.h>
 #include <cublas_v2.h>
 #include <curand.h>
