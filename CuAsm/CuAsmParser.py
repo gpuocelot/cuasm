@@ -2046,5 +2046,53 @@ class CuAsmParser(object):
 
         return s.strip()
 
+    def parse_from_buffer(self, buffer: list[str]):
+        self.reset()
+
+        fname = 'tmp'
+        self.__mFilename = fname
+        self.__mLines = buffer
+
+        self.__preScan()
+        self.__gatherTextSectionSizeLabel()
+        self.__buildInternalTables()
+        self.__evalFixups() # 
+        self.__parseKernels()
+        self.__buildRelocationSections()
+        self.__layoutSections() 
+        self.__updateSymtab()
+    
+    def dump_cubin(self):
+        fout = BytesIO()
+
+        disppos = lambda s: CuAsmLogger.logSubroutine("%#08x(%08d) : %s"%(fout.tell(), fout.tell(), s))
+        # write ELF file header
+        disppos('FileHeader')
+        fout.write(self.__mCuAsmFile.buildFileHeader())
+
+        # write section data
+        for sname,sec in self.__mSectionDict.items():
+            disppos('SectionData %s'%sname)
+            sec.writePaddedData(fout)
+
+        # write padding bytes before section header
+        if self.__mPadSizeBeforeSecHeader > 0:
+            disppos('Padding %d bytes before section header' % self.__mPadSizeBeforeSecHeader)
+            fout.write(b'\x00' * self.__mPadSizeBeforeSecHeader)
+
+        # write section headers
+        for sname,sec in self.__mSectionDict.items():
+            disppos('SectionHeader %s'%sname)
+            fout.write(sec.buildHeader())
+
+        # write segment headers
+        for seg in self.__mSegmentList:
+            disppos('Segment')
+            fout.write(seg.build())
+        return fout
+
+    def setInsAsmRepos(self, fname, arch):
+        self.__mCuInsAsmRepos = CuInsAssemblerRepos(fname, arch=arch)
+
 if __name__ == '__main__':
     pass

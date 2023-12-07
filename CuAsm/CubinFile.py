@@ -29,18 +29,18 @@ class CubinFile():
     '''
 
     def __init__(self, cubinname):
-        self.__mCubinName = cubinname
+        self._mCubinName = cubinname
         self.loadCubin(cubinname)
 
     def __reset(self):
-        self.__mELFFileHeader = None
-        self.__mELFSections = OrderedDict()
-        self.__mELFSegments = []
-        self.__mELFSegmentRange = []
+        self._mELFFileHeader = None
+        self._mELFSections = OrderedDict()
+        self._mELFSegments = []
+        self._mELFSegmentRange = []
 
-        self.__mAsmLines = None
-        self.__mAsmSectionMarkers = {}
-        self.__mCubinBytes = None       #
+        self._mAsmLines = None
+        self._mAsmSectionMarkers = {}
+        self._mCubinBytes = None       #
 
         self.m_Arch = None
         self.m_VirtualSMVersion = None
@@ -57,11 +57,11 @@ class CubinFile():
         sec_end_dict = {}
 
         with open(binname, 'rb') as fin:
-            self.__mCubinBytes = fin.read()
+            self._mCubinBytes = fin.read()
 
-        with BytesIO(self.__mCubinBytes) as bio:
+        with BytesIO(self._mCubinBytes) as bio:
             ef = ELFFile(bio)
-            self.__mELFFileHeader = ef.header
+            self._mELFFileHeader = ef.header
 
             if ef.header['e_type'] != 'ET_EXEC':
                 msg = 'Currently only ET_EXEC type of elf is supported! %s given...' % ef.header['e_type']
@@ -79,16 +79,16 @@ class CubinFile():
             # Example: type=2, abi=7, sm=86, toolkit=111, flags = 0x500556
             # flags>>16 = 0x50 = 80, means virtual arch compute_80
             # flags&0xff = 0x56 = 86, means sm_86
-            vsm_version = (self.__mELFFileHeader['e_flags']>>16)&0xff
-            sm_version = self.__mELFFileHeader['e_flags']&0xff
+            vsm_version = (self._mELFFileHeader['e_flags']>>16)&0xff
+            sm_version = self._mELFFileHeader['e_flags']&0xff
             self.m_Arch = CuSMVersion(sm_version)
             self.m_VirtualSMVersion = vsm_version
-            self.m_ToolKitVersion = self.__mELFFileHeader['e_version']
+            self.m_ToolKitVersion = self._mELFFileHeader['e_version']
 
-            sh_index = self.__mELFFileHeader['e_ehsize']
+            sh_index = self._mELFFileHeader['e_ehsize']
             sh_edgelist = []
             for isec, sec in enumerate(ef.iter_sections()):
-                self.__mELFSections[sec.name]= sec.header, sec.data()
+                self._mELFSections[sec.name]= sec.header, sec.data()
 
                 # build section start/end offset dict
                 # only for determine the coverage of segments
@@ -111,16 +111,16 @@ class CubinFile():
                 sec_end_dict[sh_end] = sname
 
             # Add segment header to start/end dict
-            if self.__mELFFileHeader['e_phnum'] > 0:
-                poff = self.__mELFFileHeader['e_phoff']
+            if self._mELFFileHeader['e_phnum'] > 0:
+                poff = self._mELFFileHeader['e_phoff']
                 sec_start_dict[poff] = PROGRAM_HEADER_TAG
-                pend = poff + self.__mELFFileHeader['e_phnum'] * self.__mELFFileHeader['e_phentsize']
+                pend = poff + self._mELFFileHeader['e_phnum'] * self._mELFFileHeader['e_phentsize']
                 sec_end_dict[pend] = PROGRAM_HEADER_TAG
 
             for seg in ef.iter_segments():
-                self.__mELFSegments.append(seg.header)
+                self._mELFSegments.append(seg.header)
                 
-        for iseg, segh in enumerate(self.__mELFSegments):
+        for iseg, segh in enumerate(self._mELFSegments):
             if segh['p_type'] == 'PT_LOAD': # only P_LOAD type needs range
                 p0 = segh['p_offset']
                 p1 = p0 + segh['p_memsz'] # filesz will not count NOBITS sections
@@ -153,9 +153,9 @@ class CubinFile():
                 else:
                     sec_end = sec_end_dict[p1]
 
-                self.__mELFSegmentRange.append((sec_start, sec_end))
+                self._mELFSegmentRange.append((sec_start, sec_end))
             else:
-                self.__mELFSegmentRange.append((None,None))
+                self._mELFSegmentRange.append((None,None))
 
         # get disassembly from nvdisasm
         # TODO: check availablity of nvdisasm
@@ -168,11 +168,11 @@ class CubinFile():
         else:
             asmtext = CubinFile.disassembleCubin(binname)
 
-        self.__mAsmLines = asmtext.splitlines()
+        self._mAsmLines = asmtext.splitlines()
 
         # split asm text into sections, according to .section directive
         # the file header line range is in key "$FileHeader"
-        self.__mAsmSectionMarkers = splitAsmSection(self.__mAsmLines)
+        self._mAsmSectionMarkers = splitAsmSection(self._mAsmLines)
 
     def __writeFileHeaderAsm(self, stream, ident='\t'):
         ''' generate file header asm.
@@ -211,12 +211,12 @@ class CubinFile():
 
         CuAsmLogger.logSubroutine('Writing CuAsm file header...')
 
-        fheader = self.__mELFFileHeader
-        m0, m1 = self.__mAsmSectionMarkers['$FileHeader']
-        # stream.writelines('\n'.join(self.__mAsmLines[m0:m1])) # usually only header flags and elftype
+        fheader = self._mELFFileHeader
+        m0, m1 = self._mAsmSectionMarkers['$FileHeader']
+        # stream.writelines('\n'.join(self._mAsmLines[m0:m1])) # usually only header flags and elftype
         stream.write(ident + '// All file header info is kept as is (unless offset/size attributes)\n')
         stream.write(ident + '// The original header flags is not complete, thus discarded. \n')
-        for line in self.__mAsmLines[m0:m1]:
+        for line in self._mAsmLines[m0:m1]:
             stream.write(ident + '// ' + line + '\n')
 
         stream.write(ident + '.__elf_ident_osabi      %d\n'%fheader['e_ident']['EI_OSABI'])
@@ -292,24 +292,24 @@ class CubinFile():
         CuAsmLogger.logSubroutine('Writing code section %s...'%secname)
 
         # get assembly lines according to current text section
-        mstart, mend = self.__mAsmSectionMarkers[secname]
-        asmlines = self.__mAsmLines[mstart:mend]
+        mstart, mend = self._mAsmSectionMarkers[secname]
+        asmlines = self._mAsmLines[mstart:mend]
 
         # extract nvinfo, get offset label dict
         # some offset nvinfo cannot recover from assembly
         # thus we need this label to keep them unaffected
         kname = re.sub('^\.text\.', '', secname)
         nvinfo_secname = '.nv.info.' + kname
-        if nvinfo_secname not in self.__mELFSections:
+        if nvinfo_secname not in self._mELFSections:
             raise KeyError('Info section (%s) not found!'%nvinfo_secname)
 
-        nvinfo_data = self.__mELFSections[nvinfo_secname][1]
+        nvinfo_data = self._mELFSections[nvinfo_secname][1]
         nvinfo = CuNVInfo(nvinfo_data, self.m_Arch)
         offset_labels = nvinfo.getOffsetLabelDict(kname)
 
         # get code bytes of current text section
-        codeheader = self.__mELFSections[secname][0]
-        codebytes = self.__mELFSections[secname][1]
+        codeheader = self._mELFSections[secname][0]
+        codebytes = self._mELFSections[secname][1]
 
         ctrl_code_list, ins_code_list = self.m_Arch.splitCtrlCodeFromBytes(codebytes)
 
@@ -368,14 +368,14 @@ class CubinFile():
         '''
         CuAsmLogger.logSubroutine('Writing explicit section %s...'%secname)
 
-        m0, m1 = self.__mAsmSectionMarkers[secname]
-        stream.write(self.__mAsmLines[m0]+'\n')  # declaration first
+        m0, m1 = self._mAsmSectionMarkers[secname]
+        stream.write(self._mAsmLines[m0]+'\n')  # declaration first
 
-        header, _ = self.__mELFSections[secname]
+        header, _ = self._mELFSections[secname]
         self.__writeSectionHeaderAsm(stream, secname, header) # followed by section info
 
         # 2 spaces is for identation, thus all section contents can be collapsed
-        stream.write('  ' + '\n  '.join(self.__mAsmLines[m0+1:m1])) # followed by section data
+        stream.write('  ' + '\n  '.join(self._mAsmLines[m0+1:m1])) # followed by section data
 
     def __writeImplicitSectionAsm(self, stream, secname):
         ''' Write implicit sections not shown in nvdisasm output.
@@ -392,9 +392,9 @@ class CubinFile():
 
         CuAsmLogger.logSubroutine('Writing implicit section %s...'%secname)
 
-        header, data = self.__mELFSections[secname]
+        header, data = self._mELFSections[secname]
 
-        bio = BytesIO(self.__mCubinBytes)
+        bio = BytesIO(self._mCubinBytes)
         ef = ELFFile(bio)
 
         if secname == '.shstrtab' or secname == '.strtab':
@@ -514,10 +514,10 @@ class CubinFile():
             fout.write('  //-------------------------------------------------\n\n\n')
 
             # output sections
-            for secname in self.__mELFSections:
+            for secname in self._mELFSections:
                 fout.write('\n// --------------------- %-32s --------------------------\n'%secname)
                 # for sections in assembly, write the assembly
-                if secname in self.__mAsmSectionMarkers:
+                if secname in self._mAsmSectionMarkers:
                     if secname.startswith('.text.'):
                         self.__writeCodeSectionAsm(fout, secname)
                     else:
@@ -530,7 +530,7 @@ class CubinFile():
             fout.write('  //---------------- END of sections ----------------\n')
             fout.write('  //-------------------------------------------------\n\n\n')
 
-            for segheader,segrange in zip(self.__mELFSegments, self.__mELFSegmentRange):
+            for segheader,segrange in zip(self._mELFSegments, self._mELFSegmentRange):
                 self.__writeSegmentHeaderAsm(fout, segheader, segrange)
 
             fout.write('\n')
@@ -551,8 +551,61 @@ class CubinFile():
         asmtext = check_output([Config.NVDISASM_PATH, binname]).decode()
 
         return asmtext
+    
+    def dump_sass(self):
+        fout = StringIO()
+
+        # output file header
+        fout.write('// --------------------- FileHeader --------------------------\n')
+        self.__writeFileHeaderAsm(fout)
+
+        fout.write('\n')
+        fout.write('  //-------------------------------------------------\n')
+        fout.write('  //------------ END of FileHeader ------------------\n')
+        fout.write('  //-------------------------------------------------\n\n\n')
+
+        # output sections
+        for secname in self._mELFSections:
+            fout.write('\n// --------------------- %-32s --------------------------\n'%secname)
+            # for sections in assembly, write the assembly
+            if secname in self._mAsmSectionMarkers:
+                if secname.startswith('.text.'):
+                    self.__writeCodeSectionAsm(fout, secname)
+
+                    # get assembly lines according to current text section
+                    mstart, mend = self._mAsmSectionMarkers[secname]
+                    asmlines = self._mAsmLines[mstart:mend]
+
+                else:
+                    self.__writeExplicitSectionAsm(fout, secname)
+            else: # for implicit sections, write raw strings/bytes
+                self.__writeImplicitSectionAsm(fout, secname)
+
+        fout.write('\n')
+        fout.write('  //-------------------------------------------------\n')
+        fout.write('  //---------------- END of sections ----------------\n')
+        fout.write('  //-------------------------------------------------\n\n\n')
+
+        for segheader,segrange in zip(self._mELFSegments, self._mELFSegmentRange):
+            self.__writeSegmentHeaderAsm(fout, segheader, segrange)
+
+        fout.write('\n')
+        fout.write('  //-------------------------------------------------\n')
+        fout.write('  //---------------- END of segments ----------------\n')
+        fout.write('  //-------------------------------------------------\n\n\n')
+
+        kernel_sass = self.dump_kernel_sass()  # changable
+        return fout, kernel_sass
+
+    def dump_kernel_sass(self):
+        fout = StringIO()
+        for secname in self._mELFSections:
+            if secname in self._mAsmSectionMarkers:
+                if secname.startswith('.text.'):
+                    fout.write('\n// --------------------- %-32s --------------------------\n'%secname)
+                    self.__writeCodeSectionAsm(fout, secname)
+        return fout
 
 
-
-if __name__ == '__main__':
+if __name__ == '_main__':
     pass
