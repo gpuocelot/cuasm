@@ -777,7 +777,7 @@ class CuAsmParser(object):
 
         self.__updateSymtab()
 
-    @CuAsmLogger.logTimeIt
+    # @CuAsmLogger.logTimeIt
     def saveAsCubin(self, fstream):
         if isinstance(fstream, str):
             fout = open(fstream, 'wb')
@@ -929,7 +929,7 @@ class CuAsmParser(object):
 
     # @CuAsmLogger.logTraceIt
     def __parseKernelText(self, section, line_start, line_end):
-        CuAsmLogger.logProcedure('Parsing kernel text of "%s"...'%section.name)
+        # CuAsmLogger.logProcedure('Parsing kernel text of "%s"...'%section.name)
 
         kasm = CuKernelAssembler(ins_asm_repos=self.__mCuInsAsmRepos, version=self.m_Arch)
 
@@ -2065,31 +2065,31 @@ class CuAsmParser(object):
     def dump_cubin(self):
         fout = BytesIO()
 
-        disppos = lambda s: CuAsmLogger.logSubroutine("%#08x(%08d) : %s"%(fout.tell(), fout.tell(), s))
-        # write ELF file header
-        disppos('FileHeader')
+        # disppos = lambda s: CuAsmLogger.logSubroutine("%#08x(%08d) : %s"%(fout.tell(), fout.tell(), s))
+        ## write ELF file header
+        # disppos('FileHeader')
         fout.write(self.__mCuAsmFile.buildFileHeader())
 
         # write section data
         for sname,sec in self.__mSectionDict.items():
-            disppos('SectionData %s'%sname)
+            # disppos('SectionData %s'%sname)
             sec.writePaddedData(fout)
 
         # write padding bytes before section header
         if self.__mPadSizeBeforeSecHeader > 0:
-            disppos('Padding %d bytes before section header' % self.__mPadSizeBeforeSecHeader)
+            # disppos('Padding %d bytes before section header' % self.__mPadSizeBeforeSecHeader)
             fout.write(b'\x00' * self.__mPadSizeBeforeSecHeader)
 
         # write section headers
         for sname,sec in self.__mSectionDict.items():
-            disppos('SectionHeader %s'%sname)
+            # disppos('SectionHeader %s'%sname)
             fout.write(sec.buildHeader())
 
         # write segment headers
         for seg in self.__mSegmentList:
-            disppos('Segment')
+            # disppos('Segment')
             fout.write(seg.build())
-        return fout
+        return fout.getvalue()
 
     def setInsAsmRepos(self, fname, arch):
         self.__mCuInsAsmRepos = CuInsAssemblerRepos(fname, arch=arch)

@@ -182,8 +182,9 @@ class CuAsmLogger(object):
     
     @staticmethod
     def logSubroutine(msg, *args, **kwargs):
-        full_msg = '     SUB - ' + CuAsmLogger.__IndentString + msg
-        CuAsmLogger.__CurrLogger.log(CuAsmLogger.SUBROUTINE, full_msg, *args, **kwargs)
+        # full_msg = '     SUB - ' + CuAsmLogger.__IndentString + msg
+        # CuAsmLogger.__CurrLogger.log(CuAsmLogger.SUBROUTINE, full_msg, *args, **kwargs)
+        pass
         
 
     @staticmethod
@@ -235,11 +236,11 @@ class CuAsmLogger(object):
         '''
         '''
         def wrapper(*args, **kwargs):
-            CuAsmLogger.logLiteral('Running %s...'%func.__qualname__)
-            CuAsmLogger.incIndent()
+            # CuAsmLogger.logLiteral('Running %s...'%func.__qualname__)
+            # CuAsmLogger.incIndent()
             
             ret = func(*args, **kwargs)
-            CuAsmLogger.decIndent()
+            # CuAsmLogger.decIndent()
 
             return ret
 
