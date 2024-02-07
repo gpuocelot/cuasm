@@ -6,7 +6,7 @@ import pathlib
 
 STEM = pathlib.Path(__file__).resolve().parents[1]
 sys.path.append(str(STEM))
-REPO = STEM/"repo"
+REPO = STEM/"scratch"
 REPO.mkdir(parents=True, exist_ok=True)
 
 from CuAsm.CuInsAssemblerRepos import CuInsAssemblerRepos
