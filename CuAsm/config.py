@@ -11,7 +11,8 @@ def getDefaultStruct(st):
 class Config(object):
 
     # Default path to nvdisasm
-    NVDISASM_PATH = 'nvdisasm'
+    # NVDISASM_PATH = 'nvdisasm'
+    NVDISASM_PATH='/usr/local/cuda/bin/nvdisasm'
 
     # Currently only little_endian and ELF64 is supported
     # NOTE: There are quite a lot of hardcodes for endianness and elfclass
@@ -27,7 +28,7 @@ class Config(object):
     # 'e_phentsize': 56, 'e_shentsize': 64
     defaultSectionHeader = getDefaultStruct(CubinELFStructs.Elf_Shdr)
     defaultSegmentHeader = getDefaultStruct(CubinELFStructs.Elf_Phdr)
-    
+
     # 24 B
     defaultSymbol = getDefaultStruct(CubinELFStructs.Elf_Sym)
 
@@ -54,12 +55,12 @@ class Config(object):
     def getDefaultIOInfoFile(version_number):
         module_dir = os.path.split(__file__)
         fdir = os.path.join(module_dir[0], 'InsAsmRepos')
-        
+
         fname = 'IOInfo.sm_%d.txt' % version_number
         fpath = os.path.join(fdir, fname)
-        
+
         if not os.path.isfile(fpath):
             fpath = os.path.join(fdir, 'IOInfo.all.json')
-        
+
         return fpath
-        
+
